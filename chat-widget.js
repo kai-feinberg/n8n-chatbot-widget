@@ -239,6 +239,9 @@
             resize: none;
             font-family: inherit;
             font-size: 14px;
+            min-height: 40px;
+            max-height: 120px;
+            line-height: 1.4;
         }
 
         .n8n-chat-widget .chat-input textarea::placeholder {
@@ -301,6 +304,7 @@
             text-align: center;
             background: var(--chat--color-background);
             border-top: 1px solid rgba(133, 79, 255, 0.1);
+            display: none;
         }
 
         .n8n-chat-widget .chat-footer a {
@@ -340,8 +344,8 @@
             welcomeText: '',
             responseTimeText: '',
             poweredBy: {
-                text: 'Powered by n8n',
-                link: 'https://n8n.partnerlinks.io/m8a94i19zhqq?utm_source=nocodecreative.io'
+                text: '',
+                link: ''
             }
         },
         style: {
@@ -409,9 +413,6 @@
             <div class="chat-input">
                 <textarea placeholder="Type your message here..." rows="1"></textarea>
                 <button type="submit">Send</button>
-            </div>
-            <div class="chat-footer">
-                <a href="${config.branding.poweredBy.link}" target="_blank">${config.branding.poweredBy.text}</a>
             </div>
         </div>
     `;
@@ -562,8 +563,15 @@
             if (message) {
                 sendMessage(message);
                 textarea.value = '';
+                textarea.style.height = 'auto';
             }
         }
+    });
+
+    // Auto-resize textarea
+    textarea.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
     });
     
     toggleButton.addEventListener('click', () => {
