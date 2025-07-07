@@ -242,6 +242,8 @@
             min-height: 40px;
             max-height: 120px;
             line-height: 1.4;
+            overflow-y: hidden;
+            box-sizing: border-box;
         }
 
         .n8n-chat-widget .chat-input textarea::placeholder {
@@ -548,11 +550,30 @@
 
     newChatBtn.addEventListener('click', startNewConversation);
     
+    // Auto-resize textarea function
+    function autoResizeTextarea(textarea) {
+        // Reset height to auto to get proper scrollHeight
+        textarea.style.height = 'auto';
+        // Calculate new height with boundaries
+        const newHeight = Math.max(40, Math.min(textarea.scrollHeight, 120));
+        textarea.style.height = newHeight + 'px';
+        
+        // Add scrollbar if content exceeds max height
+        if (textarea.scrollHeight > 120) {
+            textarea.style.overflowY = 'auto';
+        } else {
+            textarea.style.overflowY = 'hidden';
+        }
+    }
+
     sendButton.addEventListener('click', () => {
         const message = textarea.value.trim();
         if (message) {
             sendMessage(message);
             textarea.value = '';
+            // Reset textarea height
+            textarea.style.height = '40px';
+            textarea.style.overflowY = 'hidden';
         }
     });
     
@@ -563,15 +584,16 @@
             if (message) {
                 sendMessage(message);
                 textarea.value = '';
-                textarea.style.height = 'auto';
+                // Reset textarea height
+                textarea.style.height = '40px';
+                textarea.style.overflowY = 'hidden';
             }
         }
     });
 
-    // Auto-resize textarea
+    // Auto-resize textarea on input
     textarea.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        autoResizeTextarea(this);
     });
     
     toggleButton.addEventListener('click', () => {
